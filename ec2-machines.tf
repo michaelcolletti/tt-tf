@@ -12,10 +12,14 @@ resource "aws_instance" "nodeapp" {
   #!/bin/bash
   sudo yum update -y;sudo yum update --security 
   sudo yum install git nodejs python36-pip.noarch -y 
-  sudo mkdir /noderepo;cd /noderepo
+  sudo mkdir noderepo;cd noderepo
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
   sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   sudo pip install npm
+  git clone https://github.com/michaelcolletti/node-example-app.git
+  cd node-example-app
+  npm install 
+  npm run dev
 
 HEREDOC
 
@@ -36,18 +40,11 @@ resource "aws_instance" "database" {
   sleep 180
   yum update -y
   #x add repo for mongodb 
-  sudo cat << EOF > /etc/yum.repos.d/mongodb-org-4.2.repo 
-[mongodb-org-4.2]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/4.2/x86_64/
-gpgcheck=1
-enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
-EOF 
+  sudo curl https://repo.mongodb.org/yum/amazon/mongodb-org.repo > /etc/yum.repos.d/mongodb-org.repo
 
 #sudo yum install mongodb-org -y 
-sudo yum install mongodb-server.x86_64 -y
-sudo systemctl enable mongodb;sudo systemctl start mongodb ;sudo systemctl status mongodb
+  sudo yum install mongodb-server.x86_64 -y
+  sudo systemctl enable mongodb;sudo systemctl start mongodb ;sudo systemctl status mongodb
 
 #  yum install -y mysql55-server
 #  service mysqld start
@@ -68,7 +65,7 @@ resource "aws_instance" "monitoring" {
   vpc_security_group_ids      = [aws_security_group.FrontEnd.id]
   key_name                    = var.key_name
   tags = {
-    Name = "monapp"
+    Name = "monitoring"
   }
   user_data = <<HEREDOC
   #!/bin/bash

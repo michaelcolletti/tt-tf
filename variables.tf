@@ -52,7 +52,7 @@ variable "DnsZoneName" {
 }
 
 # for ASG and LC
-#variable "aws_launch_template.node.id" {
-#  default     = "nodetemplate"
-#  description = "Launch config for Node ASG"
-#}
+variable "aws-launch-template-nodeid" {
+  default     = "node"
+  description = "Launch config for Node ASG"
+}
