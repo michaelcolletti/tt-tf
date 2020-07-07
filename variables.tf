@@ -56,3 +56,22 @@ variable "aws-launch-template-nodeid" {
   default     = "node"
   description = "Launch config for Node ASG"
 }
+######
+# for asg lc and scaling with notifyt
+variable "availability_zones" {
+# No spaces allowed between az names!
+  default = ["us-east-2a","us-east-2b","us-east-2c"]
+}
+variable "asg_min" {
+  default = "2"
+}
+variable "asg_max" {
+  default = "10"
+}
+#
+# From other modules
+#
+variable "public_subnet_id" {}
+variable "webapp_lc_id" {}
+variable "webapp_lc_name" {}
+variable "webapp_elb_name" {}
