@@ -62,16 +62,64 @@ variable "availability_zones" {
 # No spaces allowed between az names!
   default = ["us-east-2a","us-east-2b","us-east-2c"]
 }
+
+#variable "asg_min" {
+#  default = "2"
+#}
+#variable "asg_max" {
+#  default = "10"
+#}
+##
+# From other modules
+#
+#variable "region" {
+#  default = "us-east-1"
+#}
+variable "ip_range" {
+  default = "0.0.0.0/0" # Change to your IP Range!
+}
+#variable "availability_zones" {
+#  # No spaces allowed between az names!
+#  default = ["us-east-2a","us-east-2b","us-east-2c"]
+#}
+variable "instance_type" {
+  default = "t2.nano"
+}
 variable "asg_min" {
   default = "2"
 }
 variable "asg_max" {
-  default = "10"
+  default = "5"
 }
-#
-# From other modules
-#
-variable "public_subnet_id" {}
-variable "webapp_lc_id" {}
-variable "webapp_lc_name" {}
-variable "webapp_elb_name" {}
+variable "asg_desired" {
+  default = "2"
+}
+# Amazon Linux AMI
+# Most recent as of 2015-12-02
+variable "amis" {
+  default = {
+    us-east-1 = "ami-60b6c60a"
+    us-west-2 = "ami-f0091d91"
+  }
+}
+variable "vpc_cidr" {
+  description = "CIDR for the whole VPC"
+  default = "10.0.0.0/16"
+}
+variable "public_subnet_cidr" {
+  description = "CIDR for the Public Subnet"
+  default = "10.0.0.0/24"
+}
+variable "private_subnet_cidr" {
+  description = "CIDR for the Private Subnet"
+  default = "10.0.1.0/24"
+}
+variable "webapp_lc_id" {
+  description = "ASG Launch Config"
+  default = "webapplc"
+}
+variable "webapp_elb_name" {
+  description = "ELB for ASG"
+  default = "webappelb"
+}
+

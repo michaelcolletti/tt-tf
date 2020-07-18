@@ -16,8 +16,8 @@ chmod 400 $HOME/.aws/$KEYPEMOUT
 
 aws ec2 describe-key-pairs --key-name $KEYPAIRNAME 
 
-printf "When done, delete via aws ec2 delete-key-pair --key-name $KEYPAIRNAME"
+printf "When done, delete via aws ec2 delete-key-pair --key-name $KEYPAIRNAME \n\n"
 
 # export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 #$ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-#$ export AWS_DEFAULT_REGION=us-west-2
+#$ export AWS_DEFAULT_REGION=us-east-1

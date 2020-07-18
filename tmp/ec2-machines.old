@@ -8,21 +8,25 @@ resource "aws_instance" "nodeapp" {
   tags = {
     Name = "nodeapp"
   }
-  user_data = <<HEREDOC
+  user_data = <<HEREDOC 
   #!/bin/bash
-  sudo yum update -y;sudo yum update --security 
+  sudo yum update -y;sudo yum update --security -y
   sudo yum install git nodejs python36-pip.noarch -y 
-  sudo mkdir noderepo;cd noderepo
+  sudo mkdir /noderepo;cd /noderepo
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-  sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  sudo pip install npm
+  sudo curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  echo ". ~/.nvm/nvm.sh" >>~/.bashrc;. ~/.bashrc
+  nvm install node
+  node -e "console.log('Running Node.js ' + process.version)" >/tmp/node.log 2>&1
   git clone https://github.com/michaelcolletti/node-example-app.git
   cd node-example-app
   npm install 
   npm run dev
 
 HEREDOC
+
 }
+
 resource "aws_instance" "reactapp" {
   ami                         = var.AmiLinux[var.region]
   instance_type               = "t2.micro"
@@ -33,26 +37,29 @@ resource "aws_instance" "reactapp" {
   tags = {
     Name = "reactapp"
   }
-  user_data = <<HEREDOC
+  user_data = <<HEREDOC 
   #!/bin/bash
-  sudo yum update -y;sudo yum update --security
-  sudo yum install git nodejs python36-pip.noarch -y
-  sudo mkdir noderepo;cd noderepo
+  sudo yum update -y;sudo yum update --security -y
+  sudo yum install git nodejs python36-pip.noarch -y 
+  sudo mkdir reactrepo;cd reactrepo
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-  sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  sudo pip install npm
+  sudo curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  echo ". ~/.nvm/nvm.sh" >>~/.bashrc;. ~/.bashrc
+  nvm install node
+  node -e "console.log('Running Node.js ' + process.version)" >/tmp/node.log 2>&1
   git clone https://github.com/michaelcolletti/node-example-app.git
   cd node-example-app
-  npm install
+  npm install 
   npm run dev
 
 HEREDOC
+
 }
 
 resource "aws_instance" "database" {
   ami                         = var.AmiLinux[var.region]
   instance_type               = "t2.small"
-  associate_public_ip_address = "true"
+  associate_public_ip_address = "false"
   subnet_id                   = aws_subnet.PrivateAZA.id
   vpc_security_group_ids      = [aws_security_group.Database.id]
   key_name                    = var.key_name
@@ -63,10 +70,8 @@ resource "aws_instance" "database" {
   #!/bin/bash
   sleep 180
   yum update -y
-  #x add repo for mongodb 
+  echo "add repo for mongodb "
   sudo curl https://repo.mongodb.org/yum/amazon/mongodb-org.repo > /etc/yum.repos.d/mongodb-org.repo
-
-#sudo yum install mongodb-org -y 
   sudo yum install mongodb-server.x86_64 -y
   sudo systemctl enable mongodb;sudo systemctl start mongodb ;sudo systemctl status mongodb
 
@@ -94,19 +99,12 @@ resource "aws_instance" "monitoring" {
   user_data = <<HEREDOC
   #!/bin/bash
   sudo yum update -y;sudo yum update --security 
-  sudo mkdir /monitoring;cd /monitoring
-  yum install git nodejs python36-pip.noarch -y 
-  sudo pip install npm
-
-#  service httpd start
-#  chkconfig httpd on
-#  echo "<?php" >> /var/www/html/calldb.php
-#  echo "\$conn = new mysqli('mydatabase.linuxacademy.internal', 'root', 'secret', 'test');" >> /var/www/html/calldb.php
-#  echo "\$sql = 'SELECT * FROM mytable'; " >> /var/www/html/calldb.php
-###  echo "\$result = \$conn->query(\$sql); " >>  /var/www/html/calldb.php
-#  echo "while(\$row = \$result->fetch_assoc()) { echo 'the value is: ' . \$row['mycol'] ;} " >> /var/www/html/calldb.php
-#  echo "\$conn->close(); " >> /var/www/html/calldb.php
-#  echo "?>" >> /var/www/html/calldb.php
+  mkdir monitoring;chmod 755 monitoring;cd monitoring
+  wget -O  https://github.com/prometheus/prometheus/releases/download/v2.19.2/prometheus-2.19.2.linux-amd64.tar.gz
+  wget -O  https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+  sudo tar -axvf prometheus-2.19.2.linux-amd64.tar.gz 
+  sudo tar -axvf node_exporter-1.0.1.linux-amd64.tar.gz
+  
 HEREDOC
 }
 
