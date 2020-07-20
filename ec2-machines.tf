@@ -10,14 +10,13 @@ resource "aws_instance" "nodeapp" {
   }
   user_data = <<HEREDOC
   #!/bin/bash
-  sudo yum update -y;sudo yum update --security 
-  sudo yum install git nodejs python36-pip.noarch -y 
-  sudo mkdir noderepo;cd noderepo
+  sudo yum update -y;sudo yum update --security;sudo yum install git 
+  sudo yum install python36-pip.noarch nodejs -y && sudo mkdir noderepo;cd noderepo
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
   sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   sudo pip install npm
-  git clone https://github.com/michaelcolletti/node-example-app.git
-  cd node-example-app
+  git clone https://github.com/michaelcolletti/node-app.git
+  cd node-app
   npm install 
   npm run dev
 
@@ -40,10 +39,11 @@ resource "aws_instance" "reactapp" {
   sudo mkdir noderepo;cd noderepo
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
   sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  sudo pip install npm
-  git clone https://github.com/michaelcolletti/node-example-app.git
-  cd node-example-app
-  npm install
+  sudo pip install --upgrade pip 
+  sudo pip install npm 
+  sudo git clone https://github.com/michaelcolletti/node-app.git
+  cd node-app
+  npm install 
   npm run dev
 
 HEREDOC
@@ -65,8 +65,6 @@ resource "aws_instance" "database" {
   yum update -y
   #x add repo for mongodb 
   sudo curl https://repo.mongodb.org/yum/amazon/mongodb-org.repo > /etc/yum.repos.d/mongodb-org.repo
-
-#sudo yum install mongodb-org -y 
   sudo yum install mongodb-server.x86_64 -y
   sudo systemctl enable mongodb;sudo systemctl start mongodb ;sudo systemctl status mongodb
 
@@ -95,9 +93,8 @@ resource "aws_instance" "monitoring" {
   #!/bin/bash
   sudo yum update -y;sudo yum update --security 
   sudo mkdir /monitoring;cd /monitoring
-  yum install git nodejs python36-pip.noarch -y 
-  sudo pip install npm
-
+  yum install git python36-pip.noarch -y 
+  
 #  service httpd start
 #  chkconfig httpd on
 #  echo "<?php" >> /var/www/html/calldb.php

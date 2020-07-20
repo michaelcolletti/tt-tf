@@ -61,8 +61,8 @@ resource "aws_security_group" "Bastion" {
   description = "ONLY TCP SSH CONNECTION INBOUND from blessed subnet"
   vpc_id      = aws_vpc.terraformmain.id
   ingress {
-    from_port       = 27017
-    to_port         = 27017
+    from_port       = "22"
+    to_port         = "22"
     protocol        = "TCP"
     security_groups = [aws_security_group.FrontEnd.id]
   }
