@@ -15,10 +15,11 @@ resource "aws_instance" "nodeapp" {
   sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
   sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   sudo pip install npm
+  curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo && sudo yum install yarn
   git clone https://github.com/michaelcolletti/node-app.git
-  cd node-app
+  cd node-app 
   npm install 
-  npm run dev
+  npm run dev >>/tmp/APP.LOG 2>>&!
 
 HEREDOC
 }
@@ -41,10 +42,10 @@ resource "aws_instance" "reactapp" {
   sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   sudo pip install --upgrade pip 
   sudo pip install npm 
-  sudo git clone https://github.com/michaelcolletti/node-app.git
-  cd node-app
+  sudo git clone https://github.com/michaelcolletti/react-app.git
+  cd react-app
   npm install 
-  npm run dev
+  npm start
 
 HEREDOC
 }
@@ -109,21 +110,18 @@ HEREDOC
 
 resource "aws_instance" "jenkins" {
   ami                         = var.AmiLinux[var.region]
-  instance_type               = "t2.micro"
+  instance_type               = "t2.small"
   associate_public_ip_address = "true"
   subnet_id                   = aws_subnet.PublicAZA.id
-  vpc_security_group_ids      = [aws_security_group.FrontEnd.id]
+  vpc_security_group_ids      = [aws_security_group.BuildMon.id]
   key_name                    = var.key_name
   tags = {
     Name = "jenkins"
   }
   user_data = <<HEREDOC
   #!/bin/bash
-  sudo yum update -y;sudo yum update --security 
-  sudo yum install git jenkins
-  #sudo mkdir /noderepo;cd /noderepo
-  #sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-  #sudo curl -sL curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  #sudo pip install npm
+  sudo yum update -y;sudo yum update --security  -y
+  sudo yum install git jenkins -y && sudo systemctl enable jenkins; sudo systemctl start jenkins;sudo systemctl status jenkins
+  
 HEREDOC
 }

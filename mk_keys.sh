@@ -18,7 +18,8 @@ aws ec2 import-key-pair --key-name "$KEYPAIRNAME2" --public-key-material fileb:/
 
 aws ec2 create-key-pair --key-name $KEYPAIRNAME --query 'KeyMaterial' --output text > $HOME/.aws/$KEYPEMOUT
 aws ec2 create-key-pair --key-name $KEYPAIRNAME2 --query 'KeyMaterial' --output text > $HOME/.aws/$KEYPEMOUT2
-chmod 400 $HOME/.aws/$KEYPEMOUT
+chmod 400 $HOME/.aws/$KEYPEMOUT 
+chmod 400 $HOME/.aws/$KEYPEMOUT2
 
 
 aws ec2 describe-key-pairs --key-name $KEYPAIRNAME $KEYPAIRNAME2

@@ -2,7 +2,7 @@ resource "aws_vpc_dhcp_options" "mediaflowdhcp" {
   domain_name         = var.DnsZoneName
   domain_name_servers = ["AmazonProvidedDNS"]
   tags = {
-    Name = "MediaFlow internal network"
+    Name = "MediaFlow Internal Network"
   }
 }
 

@@ -6,7 +6,7 @@ data "aws_availability_zones" "available" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.terraformmain.id
   tags = {
-    Name = "MediaFlow internet gw "
+    Name = "MediaFlow Internet GW "
   }
 }
 
@@ -50,7 +50,8 @@ resource "aws_route_table" "private" {
     Name = "Private"
   }
   route {
-    cidr_block     = "0.0.0.0/0"
+#    cidr_block     = "0.0.0.0/0"
+    cidr_block     = "24.161.76.3/32"
     nat_gateway_id = aws_nat_gateway.PublicAZA.id
   }
 }
