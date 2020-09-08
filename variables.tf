@@ -5,8 +5,8 @@ variable "region" {
 variable "AmiLinux" {
   type = map(string)
   default = {
-    us-east-1 = "ami-b73b63a0" # Virginia
-    us-east-2 = "ami-ea87a78f" # Ohio
+    us-east-1 = "ami-03368e982f317ae48" # Virginia
+    us-east-2 = "ami-03368e982f317ae48" # Ohio
   }
   description = "I add only 3 regions (Virginia, Oregon, Ireland) to show the map feature but you can add all the regions that you need"
 }
